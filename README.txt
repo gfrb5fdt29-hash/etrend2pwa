@@ -1,37 +1,34 @@
-Étrend – használati összefoglaló
+Étrend – használati rövid útmutató
 
-Ez az app a 2 hetes étrendet, recepteket, bevásárlólistát és útmutatókat kényelmes, mobilbarát formában jeleníti meg.
+Az Étrend app egy 14 napos étrendi program átlátható követésére készült.
 
-Fő menüpontok:
+Első indításkor egyszer állítsd be a Program kezdete dátumot. Ez alapján az app meg tudja mutatni az aktuális napot. A dátum később csak kiírva jelenik meg, mellette a Mai nap megnyitása gombbal.
 
-1. Étrend
-- Első indításkor állítsd be a program kezdő dátumát.
-- Itt találod az 1. és 2. hét napjait.
-- Egy nap megnyitásakor külön kártyán jelenik meg a reggeli, ebéd és vacsora.
-- A receptazonosítók megnyithatók.
-- A napi jegyzet automatikusan mentődik.
-- A vízkövetőnél 1 pohár kb. 2 dl-nek számít.
+Étrend nézet:
+- Válaszd ki az 1. vagy 2. hetet.
+- Nyisd meg a napot.
+- Az étkezéseknél a Részletek gombbal nyithatod meg a kapcsolódó receptet.
+- A napi jegyzet és a vízkövető csak ezen az eszközön mentődik.
 
-2. Receptek
-- A receptek kártyákban szerepelnek.
-- Kereshetsz név, recept-ID, címke vagy hozzávaló alapján.
-- A részletek lenyitható blokkokban jelennek meg.
+Receptek nézet:
+- Kereshetsz és szűrhetsz receptek között.
+- A hosszabb receptblokkok lenyitható részekben jelennek meg.
 
-3. Bevásárlólista
-- Az 1. hét, 2. hét, mindkét hét vagy egy konkrét nap listája választható.
+Bevásárlólista nézet:
+- Alapból csak a heti, napi és összesített választók látszanak.
+- Kattints az 1. hétre, 2. hétre, az összesített listára vagy egy konkrét napra.
 - A tételek pipálhatók, és a pipák helyben mentődnek.
-- A pipák törölhetők az aktuális listán vagy minden listán.
+- A napi listák az adott nap receptjeihez kapcsolódó tételeket mutatják.
 
-4. Útmutató
+Útmutató nézet:
 - Itt találod a kávéval, folyadékkal, emésztéssel, alvással, adagolással és fontos tudnivalókkal kapcsolatos részeket.
 
-5. Keresés
-- Az app teljes tartalmában kereshetsz.
-- A keresés ékezetfüggetlen, így például a „tokfozelek” is megtalálja a „tökfőzelék” találatot.
+Keresés:
+- Kereshetsz étkezésekre, receptekre, hozzávalókra, bevásárlólista-tételekre és útmutató részekre. A találatok gépelés közben frissülnek, a billentyűzet nem záródik be minden karakter után.
 
-Téma váltása:
-- A felső gombbal válthatsz világos és sötét mód között.
-- A választás helyben mentődik.
+Megjelenés:
+- A világos/sötét mód a jobb felső gombbal váltható.
+- A választás ezen az eszközön mentődik.
 
 Fontos:
-Ez az app általános étrendi mintát jelenít meg, és nem helyettesít orvosi vagy dietetikusi tanácsadást.
+Ez egy általános étrendi minta, nem helyettesít orvosi vagy dietetikusi tanácsadást.
