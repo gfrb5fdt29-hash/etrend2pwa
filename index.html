@@ -21,6 +21,8 @@
   --bg:#07130F; --surface:#101D18; --surface2:#14261F; --text:#EEF8F3; --muted:#A9B9B1; --line:rgba(231,255,242,.12);
   --shadow:0 8px 26px rgba(0,0,0,.25); --accent-soft:#143B2E; --cream:#251F13; --nav:rgba(10,20,16,.92); --danger-soft:#2A2112;
 }
+[data-theme="dark"] .card.info{background:linear-gradient(135deg,#123F31 0%,#132B23 52%,var(--surface) 100%);}
+[data-theme="dark"] .card.soft,[data-theme="dark"] .choice-card,[data-theme="dark"] .day-choice{background:linear-gradient(145deg,#142B23 0%,#102019 55%,var(--surface) 100%);}
 *{box-sizing:border-box}
 html,body{margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif; -webkit-font-smoothing:antialiased;}
 body{padding:env(safe-area-inset-top) 0 calc(78px + env(safe-area-inset-bottom)) 0; overflow-x:hidden;}
@@ -93,25 +95,35 @@ input,select{width:100%; padding:11px 12px; border-radius:13px; border:1px solid
 .markdown hr{border:0; border-top:1px solid var(--line); margin:14px 0}
 .markdown blockquote{margin:10px 0; padding:10px 12px; border-left:3px solid var(--accent); background:var(--surface2); border-radius:12px}
 
-/* Finom iOS-szerű mozgások */
-.view-wrap{animation:pageIn 190ms ease-out both;}
-@keyframes pageIn{from{opacity:0; transform:translateY(8px);}to{opacity:1; transform:translateY(0);}}
-button,.nav-item,.icon-btn,.soft-btn,.primary-btn,button.card,.accordion summary,.shop-item{transition:transform 120ms ease, box-shadow 160ms ease, background-color 160ms ease, border-color 160ms ease, opacity 160ms ease; -webkit-tap-highlight-color:transparent;}
-button:active,.nav-item:active,.icon-btn:active,.soft-btn:active,.primary-btn:active,button.card:active,.accordion summary:active,.shop-item:active{transform:scale(.975);}
-button.card:active{box-shadow:0 3px 10px rgba(26,65,49,.08);}
-.accordion[open] .acc-body{animation:accordionIn 160ms ease-out both;}
-@keyframes accordionIn{from{opacity:0; transform:translateY(-4px);}to{opacity:1; transform:translateY(0);}}
-.choice-grid{display:grid; gap:10px; grid-template-columns:repeat(2,1fr);}
-.choice-grid .wide{grid-column:1/-1;}
-.choice-card{text-align:left; width:100%; position:relative; overflow:hidden;}
-.choice-card h3{margin-bottom:4px;}
-.choice-card .choice-icon{width:38px; height:38px; border-radius:14px; display:flex; align-items:center; justify-content:center; background:var(--accent-soft); color:var(--accent); margin-bottom:10px;}
-.day-choice-grid{display:grid; gap:8px; grid-template-columns:repeat(2,1fr);}
-.day-choice{width:100%; text-align:left; padding:12px; border-radius:16px; border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow);}
-.day-choice strong{display:block; margin-bottom:3px;}
+/* Premium, mégis puha iOS-szerű mozgások */
+.view-wrap{animation:premiumPageIn 360ms cubic-bezier(.2,.9,.2,1) both; will-change:transform,opacity;}
+@keyframes premiumPageIn{from{opacity:0; transform:translate3d(0,18px,0) scale(.985); filter:blur(1.5px);}60%{opacity:1;}to{opacity:1; transform:translate3d(0,0,0) scale(1); filter:blur(0);}}
+button,.nav-item,.icon-btn,.soft-btn,.primary-btn,button.card,.accordion summary,.shop-item,.choice-card,.day-choice{transition:transform 210ms cubic-bezier(.2,.9,.2,1), box-shadow 230ms ease, background 230ms ease, background-color 230ms ease, border-color 230ms ease, opacity 180ms ease, filter 230ms ease; -webkit-tap-highlight-color:transparent; will-change:transform;}
+button:active,.nav-item:active,.icon-btn:active,.soft-btn:active,.primary-btn:active,button.card:active,.accordion summary:active,.shop-item:active,.choice-card:active,.day-choice:active{transform:translateY(2px) scale(.955); filter:saturate(1.08);}
+button.card:active,.choice-card:active,.day-choice:active,.primary-btn:active,.soft-btn:active{box-shadow:0 2px 8px rgba(17,75,53,.11), inset 0 2px 8px rgba(0,0,0,.08);}
+.card,.nav-item.active,.chip.active,.primary-btn{background-image:linear-gradient(135deg, rgba(29,158,117,.03), rgba(29,158,117,0));}
+.card.info{background:linear-gradient(135deg, #CFF4E6 0%, #EFFBF5 48%, var(--surface) 100%);}
+.card.soft{background:linear-gradient(135deg, #E8F8F0 0%, var(--surface2) 45%, var(--surface) 100%);}
+.primary-btn{background:linear-gradient(135deg, #20B985 0%, #1D9E75 52%, #137A59 100%); color:white; border-color:transparent; font-weight:800; box-shadow:0 12px 28px rgba(29,158,117,.26);}
+.nav-item.active{background:linear-gradient(135deg, rgba(29,158,117,.22), rgba(29,158,117,.08));}
+.accordion[open] .acc-body{animation:accordionIn 240ms cubic-bezier(.2,.9,.2,1) both;}
+@keyframes accordionIn{from{opacity:0; transform:translateY(-8px);}to{opacity:1; transform:translateY(0);}}
+.choice-grid{display:grid; gap:8px; grid-template-columns:repeat(3,1fr);}
+.choice-grid .wide{grid-column:auto;}
+.choice-card{text-align:left; width:100%; position:relative; overflow:hidden; min-height:96px; padding:12px; margin:0; background:linear-gradient(145deg, var(--surface), var(--surface2));}
+.choice-card h3{margin-bottom:2px; font-size:16px;}
+.choice-card .choice-icon{width:32px; height:32px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--accent-soft), rgba(29,158,117,.08)); color:var(--accent); margin-bottom:7px; font-weight:800;}
+.day-choice-grid{display:grid; gap:9px; grid-template-columns:repeat(2,minmax(0,1fr));}
+.day-choice{width:100%; text-align:left; padding:13px 12px; border-radius:16px; border:1px solid var(--line); background:linear-gradient(145deg, var(--surface), var(--surface2)); box-shadow:var(--shadow); min-height:74px;}
+.day-choice strong{display:block; margin-bottom:3px; font-size:14px;}
+.shopping-compact{padding:12px;}
+.shopping-compact h3{font-size:17px; margin-bottom:8px;}
 .selection-head{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
 .summary-note{font-size:13px; color:var(--muted); margin-top:8px;}
-@media(max-width:420px){.choice-grid,.day-choice-grid{grid-template-columns:1fr;}}
+@media(max-width:520px){.choice-grid{grid-template-columns:repeat(3,1fr); gap:7px}.choice-card{padding:10px; min-height:88px}.choice-card p{display:none}.choice-card h3{font-size:15px}.day-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.day-choice .tiny{display:none;}}
+.today-box{text-align:center; padding:22px 18px;}
+.today-date{font-size:17px; font-weight:800; color:var(--text); margin-bottom:16px;}
+.today-btn{min-width:210px; min-height:52px; font-size:16px; border-radius:18px; margin:0 auto; display:inline-flex; align-items:center; justify-content:center;}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important; transition:none!important; scroll-behavior:auto!important;}}
 
 </style>
@@ -131,7 +143,7 @@ const $ = (sel, root=document) => root.querySelector(sel);
 const $$ = (sel, root=document) => [...root.querySelectorAll(sel)];
 const LS = { get:k=>localStorage.getItem(k), set:(k,v)=>localStorage.setItem(k,v), del:k=>localStorage.removeItem(k) };
 const NAV = [
-  ['diet','Étrend','<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="M9 15h.01M12 15h.01M15 15h.01"/></svg>'],
+  ['diet','Főoldal','<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="M9 15h.01M12 15h.01M15 15h.01"/></svg>'],
   ['recipes','Receptek','<svg viewBox="0 0 24 24"><path d="M5 4h10a4 4 0 0 1 4 4v12H9a4 4 0 0 0-4-4z"/><path d="M5 4v16M9 8h6M9 12h5"/></svg>'],
   ['shopping','Bevásárlólista','<svg viewBox="0 0 24 24"><path d="M7 8h13l-2 9H8L6 4H3"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M10 11h6"/></svg>'],
   ['guide','Útmutató','<svg viewBox="0 0 24 24"><path d="M12 3l8 4-8 4-8-4z"/><path d="M4 11l8 4 8-4"/><path d="M4 15l8 4 8-4"/></svg>'],
@@ -199,6 +211,7 @@ function card(cls='card'){ const d=document.createElement('div'); d.className=cl
 
 function todayIso(){ const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
 function formatDateHu(s=''){ if(!s) return ''; const d=new Date(s+'T00:00:00'); if(Number.isNaN(d.getTime())) return s; return d.toLocaleDateString('hu-HU',{year:'numeric',month:'2-digit',day:'2-digit'}); }
+function formatTodayLabel(){ const d=new Date(); const weekday=d.toLocaleDateString('hu-HU',{weekday:'long'}); const date=d.toLocaleDateString('hu-HU',{year:'numeric',month:'long',day:'numeric'}); return `${weekday.charAt(0).toUpperCase()+weekday.slice(1)} · ${date}`; }
 function renderStartRequired(){
   const wrap=document.createElement('div');
   const c=card('card start-gate');
@@ -208,7 +221,7 @@ function renderStartRequired(){
   return wrap;
 }
 
-function welcomeCard(){ const c=card('card info'); c.innerHTML=`<h2>Üdv az Étrend appban</h2><p>Ez egy általános étrendi minta, amely segít átláthatóan követni a 14 napos programot. Nem helyettesít orvosi vagy dietetikusi tanácsadást.</p>`; return c; }
+function welcomeCard(){ const c=card('card info'); c.innerHTML=`<h2>Üdv az Étrend appban</h2><p>Ez egy puha, átlátható főoldal a 14 napos program kényelmes követéséhez.</p>`; return c; }
 function renderDiet(){ const wrap=document.createElement('div');
   if(state.day) return renderDayDetail();
   if(state.week) return renderWeekDetail(state.week);
@@ -219,16 +232,16 @@ function renderDiet(){ const wrap=document.createElement('div');
   wrap.append(grid); return wrap;
 }
 function renderStartDateBox(){
-  const c=card('card soft'); const saved=LS.get('startDate')||''; let msg='Kézi hét- és napválasztással is használható.'; let dayNo=null;
-  if(saved){ const today=new Date(); today.setHours(0,0,0,0); const start=new Date(saved+'T00:00:00'); const diff=Math.floor((today-start)/86400000)+1; if(diff>=1 && diff<=14){ dayNo=diff; msg=`Ma a(z) ${diff}. nap aktuális.` } else msg='A beállított kezdő dátum alapján ma nincs a 14 napos tartományban.'; }
-  c.innerHTML=`<h3>Program kezdete</h3><p><strong>${escapeHtml(formatDateHu(saved))}</strong></p><p class="muted">${escapeHtml(msg)}</p><button class="primary-btn" id="goToday" style="margin-top:10px" ${dayNo?'':'disabled'}>${dayNo?'Mai nap megnyitása':'Mai nap most nem aktív'}</button>`;
+  const c=card('card soft today-box'); const saved=LS.get('startDate')||''; let dayNo=null;
+  if(saved){ const today=new Date(); today.setHours(0,0,0,0); const start=new Date(saved+'T00:00:00'); const diff=Math.floor((today-start)/86400000)+1; if(diff>=1 && diff<=14) dayNo=diff; }
+  c.innerHTML=`<div class="today-date">${escapeHtml(formatTodayLabel())}</div><button class="primary-btn today-btn" id="goToday" ${dayNo?'':'disabled'}>${dayNo?'Mai nap megnyitása':'Mai nap most nem aktív'}</button>`;
   setTimeout(()=>{ const gt=$('#goToday',c); if(gt && dayNo) gt.onclick=()=>openDay(dayNo); },0);
   return c;
 }
 function openDay(dayNumber){ const w=dayNumber<=7?1:2; setState({view:'diet', week:w, day:dayNumber}); }
 function findDay(dayNumber){ for(const w of APP_DATA.weeks){ const d=w.days.find(x=>x.dayNumber==dayNumber); if(d) return {week:w, day:d}; } return null; }
 function renderWeekDetail(weekNum){ const wrap=document.createElement('div'); const w=APP_DATA.weeks.find(x=>x.weekNumber==weekNum); if(!w) return wrap;
-  const h=card('card'); h.innerHTML=`<div class="breadcrumb"><button class="nav-strong" id="backDiet">← Étrend főnézet</button><span class="nav-current">${w.title}</span></div><h2>${w.title}</h2>`; wrap.append(h); setTimeout(()=>$('#backDiet').onclick=()=>setState({week:null, day:null}),0);
+  const h=card('card'); h.innerHTML=`<div class="breadcrumb"><button class="nav-strong" id="backDiet">← Főoldal</button><span class="nav-current">${w.title}</span></div><h2>${w.title}</h2>`; wrap.append(h); setTimeout(()=>$('#backDiet').onclick=()=>setState({week:null, day:null}),0);
   w.days.forEach(d=>{ const b=document.createElement('button'); b.className='card day-card'; b.innerHTML=`<h3>${d.dayNumber}. nap – ${d.dayName}</h3>${d.meals.map(m=>`<div class="meal-line"><strong>${m.type}:</strong> ${escD(m.description)}</div>`).join('')}<p class="small muted">${escapeHtml(d.shortNote||'')}</p>`; b.onclick=()=>setState({day:d.dayNumber}); wrap.append(b); }); return wrap;
 }
 function renderDayDetail(){ const found=findDay(state.day); const wrap=document.createElement('div'); if(!found) return wrap; const {week, day}=found;
@@ -244,27 +257,6 @@ function renderMealCard(m, dayNo){
   setTimeout(()=>{ $$('.recipe-open',c).forEach(b=>b.onclick=()=>setState({view:'recipes', recipeId:b.dataset.id, returnDay:dayNo})); },0);
   return c;
 }
-
-function renderWater(dayNo){
-  const c=card('card water-card');
-  const amountKey='water-'+dayNo;
-  const goalKey='water-goal-'+dayNo;
-  const cups=Math.max(0, parseInt(LS.get(amountKey)||'0',10)||0);
-  const goalLiters=parseFloat(LS.get(goalKey)||'1.8')||1.8;
-  const goalCups=Math.max(1, Math.round(goalLiters/0.2));
-  const pct=Math.min(100, Math.round((cups/goalCups)*100));
-  const cupEls=Array.from({length:goalCups}, (_,i)=>`<button class="cup ${i<cups?'filled':''}" data-cup="${i+1}" aria-label="${i+1}. pohár">${i<cups?'💧':'♡'}</button>`).join('');
-  c.innerHTML=`<h3>Vízfogyasztás</h3><p class="small muted">1 pohár = kb. 2 dl</p><div class="water-cups">${cupEls}</div><div class="progress"><span style="width:${pct}%"></span></div><p class="small muted">${cups} pohár / kb. ${goalLiters.toFixed(1).replace('.',',')} liter cél</p><div class="inline-actions"><button class="soft-btn" id="waterMinus">− 1 pohár</button><button class="primary-btn" id="waterPlus">+ 1 pohár</button></div><label class="small muted" style="display:block;margin-top:10px">Napi cél literben</label><input id="waterGoal" type="number" min="0.2" max="5" step="0.2" value="${goalLiters}" style="width:100%;margin-top:6px">`;
-  setTimeout(()=>{
-    const saveCups=(n)=>{ LS.set(amountKey, String(Math.max(0, Math.min(40,n)))); render(); };
-    const plus=$('#waterPlus',c); if(plus) plus.onclick=()=>saveCups(cups+1);
-    const minus=$('#waterMinus',c); if(minus) minus.onclick=()=>saveCups(cups-1);
-    $$('.cup',c).forEach(btn=>btn.onclick=()=>saveCups(parseInt(btn.dataset.cup,10)||0));
-    const goal=$('#waterGoal',c); if(goal) goal.onchange=e=>{ const v=parseFloat(e.target.value); if(v>0){ LS.set(goalKey, String(v)); render(); } };
-  },0);
-  return c;
-}
-
 function renderNote(dayNo){ const c=card('card'); const key='note-'+dayNo; c.innerHTML=`<h3>Napi jegyzet</h3><textarea id="noteBox" placeholder="Írj ide rövid megjegyzést...">${escapeHtml(LS.get(key)||'')}</textarea><button class="soft-btn" id="clearNote" style="margin-top:8px">Jegyzet törlése</button>`; setTimeout(()=>{ $('#noteBox',c).oninput=e=>LS.set(key,e.target.value); $('#clearNote',c).onclick=()=>{LS.del(key); render();}; },0); return c; }
 function renderRecipes(){ if(state.recipeId) return renderRecipeDetail(state.recipeId); const wrap=document.createElement('div'); const h=card('card'); h.innerHTML='<h2>Receptek</h2><p class="muted">Kereshető, szűrhető receptkártyák.</p>'; wrap.append(h);
   const controls=card('card soft'); const cats=[...new Set(APP_DATA.recipes.map(r=>r.category).filter(Boolean))]; const tags=[...new Set(APP_DATA.recipes.flatMap(r=>r.tags))].sort();
@@ -325,25 +317,24 @@ function aggregateByCategory(lists, filter){
 }
 function renderShopping(){
   const wrap=document.createElement('div');
-  const h=card('card'); h.innerHTML='<h2>Bevásárlólista</h2><p class="muted">Válassz heti, napi vagy összesített listát. A tételek csak akkor jelennek meg, ha rákattintasz egy hétre vagy napra.</p>'; wrap.append(h);
-  const chooser=card('card soft');
-  chooser.innerHTML=`<h3>Mit szeretnél megnézni?</h3><div class="choice-grid"><button class="card choice-card" data-mode="week" data-week="1"><span class="choice-icon">1</span><h3>1. hét</h3><p class="muted small">Teljes heti bevásárlólista</p></button><button class="card choice-card" data-mode="week" data-week="2"><span class="choice-icon">2</span><h3>2. hét</h3><p class="muted small">Teljes heti bevásárlólista</p></button><button class="card choice-card wide" data-mode="all"><span class="choice-icon">✓</span><h3>Összesített lista</h3><p class="muted small">Mindkét hét tételei kategóriánként összesítve</p></button></div>`;
-  wrap.append(chooser);
-  const days=card('card');
-  days.innerHTML=`<h3>Napi bevásárlólisták</h3><p class="muted small">Kattints egy napra, és az app az adott nap receptjeihez kapcsolódó tételeket mutatja.</p><div class="day-choice-grid">${allDays().map(d=>`<button class="day-choice" data-day="${d.dayNumber}"><strong>${d.dayNumber}. nap – ${d.dayName}</strong><span class="tiny muted">${d.meals.map(m=>cleanText(m.title)).join(' · ')}</span></button>`).join('')}</div>`;
-  wrap.append(days);
-  if(!shoppingMode){
-    const empty=card('card empty'); empty.textContent='Válassz egy hetet, napot vagy az összesített listát.'; wrap.append(empty);
-  } else {
+  if(shoppingMode){
     const {lists,title,filter}=itemsForSelection();
     const block=card('card');
     const backLabel=shoppingMode==='day'?'← Vissza a napi listákhoz':'← Vissza a választóhoz';
-    block.innerHTML=`<div class="selection-head"><div><h2>${escapeHtml(title)}</h2><p class="summary-note">A tételek a meglévő étrendi bevásárlólistából vannak összerendezve.</p></div><button class="nav-strong" id="clearShoppingSelection">${backLabel}</button></div><div class="input-row" style="margin-top:10px"><button class="soft-btn" id="resetCurrent">Pipák törlése</button><button class="soft-btn" id="resetAll">Minden pipa törlése</button></div>`;
+    block.innerHTML=`<div class="selection-head"><div><h2>${escapeHtml(title)}</h2><p class="summary-note">A tételek a meglévő étrendi bevásárlólistából vannak összerendezve.</p></div><button class="nav-strong primary-btn" id="clearShoppingSelection">${backLabel}</button></div><div class="input-row" style="margin-top:10px"><button class="soft-btn" id="resetCurrent">Pipák törlése</button><button class="soft-btn" id="resetAll">Minden pipa törlése</button></div>`;
     const cats=aggregateByCategory(lists, filter);
     let shown=0;
     cats.forEach(cat=>{ const det=document.createElement('details'); det.className='accordion'; det.open=true; det.innerHTML=`<summary>${escapeHtml(cat.name)}</summary><div class="acc-body"></div>`; const body=$('.acc-body',det); cat.items.forEach(item=>{ shown++; body.append(shopItem(item.weekNumber, cat.name, item)); }); block.append(det); });
     if(!shown){ const e=document.createElement('p'); e.className='muted'; e.textContent='Ehhez a naphoz nem találtam külön releváns tételt a heti bevásárlólistában.'; block.append(e); }
     wrap.append(block);
+  } else {
+    const h=card('card'); h.innerHTML='<h2>Bevásárlólista</h2><p class="muted">Válassz heti, napi vagy összesített listát. A tételek külön nézetben nyílnak meg.</p>'; wrap.append(h);
+    const chooser=card('card soft shopping-compact');
+    chooser.innerHTML=`<h3>Mit szeretnél megnézni?</h3><div class="choice-grid"><button class="choice-card" data-mode="week" data-week="1"><span class="choice-icon">1</span><h3>1. hét</h3><p class="muted small">Teljes heti lista</p></button><button class="choice-card" data-mode="week" data-week="2"><span class="choice-icon">2</span><h3>2. hét</h3><p class="muted small">Teljes heti lista</p></button><button class="choice-card" data-mode="all"><span class="choice-icon">✓</span><h3>Összesített</h3><p class="muted small">Mindkét hét</p></button></div>`;
+    wrap.append(chooser);
+    const days=card('card');
+    days.innerHTML=`<h3>Napi bevásárlólisták</h3><p class="muted small">Kattints egy napra, és az app az adott nap receptjeihez kapcsolódó tételeket nyitja meg.</p><div class="day-choice-grid">${allDays().map(d=>`<button class="day-choice" data-day="${d.dayNumber}"><strong>${d.dayNumber}. nap – ${d.dayName}</strong><span class="tiny muted">${d.meals.map(m=>cleanText(m.title)).join(' · ')}</span></button>`).join('')}</div>`;
+    wrap.append(days);
   }
   setTimeout(()=>{
     $$('.choice-card').forEach(b=>b.onclick=()=>{ shoppingMode=b.dataset.mode; shoppingWeek=b.dataset.week||''; shoppingDay=''; render(); });
