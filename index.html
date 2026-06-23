@@ -257,6 +257,26 @@ function renderMealCard(m, dayNo){
   setTimeout(()=>{ $$('.recipe-open',c).forEach(b=>b.onclick=()=>setState({view:'recipes', recipeId:b.dataset.id, returnDay:dayNo})); },0);
   return c;
 }
+function renderWater(dayNo){
+  const c=card('card soft');
+  const key='water-'+dayNo;
+  const goalKey='waterGoal-'+dayNo;
+  let cups=Number(LS.get(key)||0);
+  let goal=Number(LS.get(goalKey)||1.8);
+  if(!Number.isFinite(cups) || cups<0) cups=0;
+  if(!Number.isFinite(goal) || goal<=0) goal=1.8;
+  const goalCups=Math.max(1,Math.round(goal/0.2));
+  const fill=Math.min(100, Math.round((cups*0.2/goal)*100));
+  c.innerHTML=`<h3>Vízfogyasztás</h3><p class="muted small">1 pohár = kb. 2 dl</p><div class="water-cups">${Array.from({length:Math.max(goalCups,cups)}).map((_,i)=>`<span class="cup ${i<cups?'filled':''}"></span>`).join('')}</div><div class="progress"><span style="width:${fill}%"></span></div><p><strong>${(cups*0.2).toFixed(1).replace('.',',')} l</strong> / ${goal.toFixed(1).replace('.',',')} l</p><div class="input-row"><button class="soft-btn" id="waterMinus">− pohár</button><button class="primary-btn" id="waterPlus">+ pohár</button></div><div class="input-row" style="margin-top:8px"><input id="waterGoal" type="number" min="0.4" step="0.2" value="${goal}"><button class="soft-btn" id="saveGoal">Cél mentése</button></div>`;
+  setTimeout(()=>{
+    const plus=$('#waterPlus',c), minus=$('#waterMinus',c), save=$('#saveGoal',c), input=$('#waterGoal',c);
+    if(plus) plus.onclick=()=>{LS.set(key,String(cups+1)); render();};
+    if(minus) minus.onclick=()=>{LS.set(key,String(Math.max(0,cups-1))); render();};
+    if(save) save.onclick=()=>{LS.set(goalKey,(input&&input.value)||'1.8'); render();};
+  },0);
+  return c;
+}
+
 function renderNote(dayNo){ const c=card('card'); const key='note-'+dayNo; c.innerHTML=`<h3>Napi jegyzet</h3><textarea id="noteBox" placeholder="Írj ide rövid megjegyzést...">${escapeHtml(LS.get(key)||'')}</textarea><button class="soft-btn" id="clearNote" style="margin-top:8px">Jegyzet törlése</button>`; setTimeout(()=>{ $('#noteBox',c).oninput=e=>LS.set(key,e.target.value); $('#clearNote',c).onclick=()=>{LS.del(key); render();}; },0); return c; }
 function renderRecipes(){ if(state.recipeId) return renderRecipeDetail(state.recipeId); const wrap=document.createElement('div'); const h=card('card'); h.innerHTML='<h2>Receptek</h2><p class="muted">Kereshető, szűrhető receptkártyák.</p>'; wrap.append(h);
   const controls=card('card soft'); const cats=[...new Set(APP_DATA.recipes.map(r=>r.category).filter(Boolean))]; const tags=[...new Set(APP_DATA.recipes.flatMap(r=>r.tags))].sort();
