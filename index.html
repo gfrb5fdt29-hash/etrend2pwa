@@ -267,7 +267,7 @@ function renderStartRequired(){
   return wrap;
 }
 
-function welcomeCard(){ const c=card('card info'); c.innerHTML=`<h2>Üdv az Étrend appban</h2><p>Ez egy átlátható, étrend optimalizáló app receptekkel, bevásárlólistával.</p>`; return c; }
+function welcomeCard(){ const c=card('card info'); c.innerHTML=`<h2>Üdv az Étrend appban</h2><p>Személyre szabott mintaétrend anya számára  – házias, magyaros, levesekre és főzelékekre épülő. A célja, hogy támogasson az emésztés javításában és a vércukor-ingadozás megelőzésében.</p>`; return c; }
 function renderDiet(){ const wrap=document.createElement('div');
   if(state.day) return renderDayDetail();
   if(state.week) return renderWeekDetail(state.week);
