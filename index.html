@@ -153,13 +153,13 @@ function cleanText(s=''){
   return String(s)
     .replace(/\s*\[[Rr]\d{2}\]/g,'')
     .replace(/\s*\([Rr]\d{2}\)/g,'')
-    .replace(/\b[Rr]\d{2}\s*[\u2013\u2014-]\s*/g,'')
+    .replace(/[Rr]\d{2}\s*[–-]\s*/g,'')
     .replace(/\s{2,}/g,' ')
     .trim();
 }
 function escD(s=''){ return escapeHtml(cleanText(s)); }
 
-function mdInline(s=''){ return escapeHtml(cleanText(s)).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>'); }
+function mdInline(s=''){ return escapeHtml(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>'); }
 function mdToHtml(md=''){
   const lines=String(md).split(/\n/); let html='', inList=false, inQuote=false;
   function closeList(){ if(inList){html+='</ul>'; inList=false;} }
@@ -244,6 +244,27 @@ function renderMealCard(m, dayNo){
   setTimeout(()=>{ $$('.recipe-open',c).forEach(b=>b.onclick=()=>setState({view:'recipes', recipeId:b.dataset.id, returnDay:dayNo})); },0);
   return c;
 }
+
+function renderWater(dayNo){
+  const c=card('card water-card');
+  const amountKey='water-'+dayNo;
+  const goalKey='water-goal-'+dayNo;
+  const cups=Math.max(0, parseInt(LS.get(amountKey)||'0',10)||0);
+  const goalLiters=parseFloat(LS.get(goalKey)||'1.8')||1.8;
+  const goalCups=Math.max(1, Math.round(goalLiters/0.2));
+  const pct=Math.min(100, Math.round((cups/goalCups)*100));
+  const cupEls=Array.from({length:goalCups}, (_,i)=>`<button class="cup ${i<cups?'filled':''}" data-cup="${i+1}" aria-label="${i+1}. pohár">${i<cups?'💧':'♡'}</button>`).join('');
+  c.innerHTML=`<h3>Vízfogyasztás</h3><p class="small muted">1 pohár = kb. 2 dl</p><div class="water-cups">${cupEls}</div><div class="progress"><span style="width:${pct}%"></span></div><p class="small muted">${cups} pohár / kb. ${goalLiters.toFixed(1).replace('.',',')} liter cél</p><div class="inline-actions"><button class="soft-btn" id="waterMinus">− 1 pohár</button><button class="primary-btn" id="waterPlus">+ 1 pohár</button></div><label class="small muted" style="display:block;margin-top:10px">Napi cél literben</label><input id="waterGoal" type="number" min="0.2" max="5" step="0.2" value="${goalLiters}" style="width:100%;margin-top:6px">`;
+  setTimeout(()=>{
+    const saveCups=(n)=>{ LS.set(amountKey, String(Math.max(0, Math.min(40,n)))); render(); };
+    const plus=$('#waterPlus',c); if(plus) plus.onclick=()=>saveCups(cups+1);
+    const minus=$('#waterMinus',c); if(minus) minus.onclick=()=>saveCups(cups-1);
+    $$('.cup',c).forEach(btn=>btn.onclick=()=>saveCups(parseInt(btn.dataset.cup,10)||0));
+    const goal=$('#waterGoal',c); if(goal) goal.onchange=e=>{ const v=parseFloat(e.target.value); if(v>0){ LS.set(goalKey, String(v)); render(); } };
+  },0);
+  return c;
+}
+
 function renderNote(dayNo){ const c=card('card'); const key='note-'+dayNo; c.innerHTML=`<h3>Napi jegyzet</h3><textarea id="noteBox" placeholder="Írj ide rövid megjegyzést...">${escapeHtml(LS.get(key)||'')}</textarea><button class="soft-btn" id="clearNote" style="margin-top:8px">Jegyzet törlése</button>`; setTimeout(()=>{ $('#noteBox',c).oninput=e=>LS.set(key,e.target.value); $('#clearNote',c).onclick=()=>{LS.del(key); render();}; },0); return c; }
 function renderRecipes(){ if(state.recipeId) return renderRecipeDetail(state.recipeId); const wrap=document.createElement('div'); const h=card('card'); h.innerHTML='<h2>Receptek</h2><p class="muted">Kereshető, szűrhető receptkártyák.</p>'; wrap.append(h);
   const controls=card('card soft'); const cats=[...new Set(APP_DATA.recipes.map(r=>r.category).filter(Boolean))]; const tags=[...new Set(APP_DATA.recipes.flatMap(r=>r.tags))].sort();
@@ -334,25 +355,21 @@ function renderShopping(){
   return wrap;
 }
 function shopKey(w,cat,item){
-  const base = item.sourceItems && item.sourceItems[0] ? item.sourceItems[0] : {weekNumber:w, category:cat, item:item};
-  return 'shop-w'+base.weekNumber+'-'+normalize(base.category||cat).replace(/\W+/g,'-')+'-'+base.item.id;
-}
-function shopKeysForItem(cat,item){
-  if(item.sourceItems && item.sourceItems.length){ return item.sourceItems.map(si=>'shop-w'+si.weekNumber+'-'+normalize(si.category||cat).replace(/\W+/g,'-')+'-'+si.item.id); }
-  return [shopKey(item.weekNumber||'', cat, item)];
+  const base = item.sourceItems && item.sourceItems[0] ? item.sourceItems[0] : {weekNumber:w, item:item};
+  return 'shop-w'+base.weekNumber+'-'+normalize(cat).replace(/\W+/g,'-')+'-'+base.item.id;
 }
 function shopItem(w,cat,item){
   const row=document.createElement('div'); row.className='shop-item';
-  const keys=shopKeysForItem(cat,item); const checked=keys.every(k=>LS.get(k)==='1');
+  const key=shopKey(w,cat,item); const checked=LS.get(key)==='1';
   row.innerHTML=`<button class="checkbox ${checked?'checked':''}" aria-label="Pipa">${checked?'✓':''}</button><div><strong>${escD(item.name)}</strong><div class="small muted">${escD(item.amount)}</div><div class="tiny muted">${escD(item.usedFor)}</div></div>`;
-  $('.checkbox',row).onclick=()=>{ const allChecked=keys.every(k=>LS.get(k)==='1'); keys.forEach(k=>allChecked?LS.del(k):LS.set(k,'1')); render(); };
+  $('.checkbox',row).onclick=()=>{ if(LS.get(key)==='1') LS.del(key); else LS.set(key,'1'); render(); };
   return row;
 }
 function resetShopping(all){
   const prefix='shop-';
   if(all){ Object.keys(localStorage).forEach(k=>{ if(k.startsWith(prefix)) localStorage.removeItem(k); }); render(); return; }
   const {lists,filter}=itemsForSelection(); const cats=aggregateByCategory(lists, filter); const keys=new Set();
-  cats.forEach(cat=>cat.items.forEach(item=>shopKeysForItem(cat.name, item).forEach(k=>keys.add(k))));
+  cats.forEach(cat=>cat.items.forEach(item=>keys.add(shopKey(item.weekNumber, cat.name, item))));
   keys.forEach(k=>localStorage.removeItem(k)); render();
 }
 function renderGuide(){ const wrap=document.createElement('div'); const h=card('card'); h.innerHTML='<h2>Útmutató</h2><p class="muted">Életmód, kávé, folyadék, adagolás és fontos tudnivalók.</p>'; wrap.append(h);
