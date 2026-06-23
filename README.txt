@@ -1,10 +1,11 @@
 Étrend – használati összefoglaló
 
-Ez az app a mellékelt Markdown étrendi tartalom alapján készült. A célja, hogy a 2 hetes étrendet, recepteket, bevásárlólistát és útmutatókat kényelmes, mobilbarát formában jelenítse meg.
+Ez az app a 2 hetes étrendet, recepteket, bevásárlólistát és útmutatókat kényelmes, mobilbarát formában jeleníti meg.
 
 Fő menüpontok:
 
 1. Étrend
+- Első indításkor állítsd be a program kezdő dátumát.
 - Itt találod az 1. és 2. hét napjait.
 - Egy nap megnyitásakor külön kártyán jelenik meg a reggeli, ebéd és vacsora.
 - A receptazonosítók megnyithatók.
@@ -17,7 +18,7 @@ Fő menüpontok:
 - A részletek lenyitható blokkokban jelennek meg.
 
 3. Bevásárlólista
-- Az 1. hét, 2. hét vagy mindkét hét listája választható.
+- Az 1. hét, 2. hét, mindkét hét vagy egy konkrét nap listája választható.
 - A tételek pipálhatók, és a pipák helyben mentődnek.
 - A pipák törölhetők az aktuális listán vagy minden listán.
 
