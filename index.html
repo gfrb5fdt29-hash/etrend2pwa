@@ -61,6 +61,40 @@ button:disabled{opacity:.55; cursor:not-allowed; transform:none!important;}
 .meal-top{display:flex; align-items:start; justify-content:space-between; gap:8px}
 .recipe-link{margin-top:8px}
 .breadcrumb{display:flex; gap:6px; flex-wrap:wrap; align-items:center; color:var(--muted); font-size:13px; margin:4px 0 8px}
+
+.back-btn{
+  min-height:42px;
+  border-radius:999px;
+  padding:0 15px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  font-weight:800;
+  color:var(--accent);
+  background:linear-gradient(135deg, rgba(29,158,117,.10), rgba(29,158,117,.03));
+  border:1.5px solid rgba(29,158,117,.42);
+  box-shadow:0 8px 20px rgba(29,158,117,.10);
+}
+.back-btn:active{
+  transform:translateY(2px) scale(.955);
+  box-shadow:0 3px 10px rgba(29,158,117,.12);
+}
+.back-btn.alt{
+  color:#35614F;
+  background:linear-gradient(135deg, rgba(110,143,126,.14), rgba(255,255,255,.35));
+  border-color:rgba(82,116,99,.34);
+}
+[data-theme="dark"] .back-btn{
+  color:#7BE0BD;
+  background:linear-gradient(135deg, rgba(29,158,117,.20), rgba(29,158,117,.05));
+  border-color:rgba(123,224,189,.42);
+}
+[data-theme="dark"] .back-btn.alt{
+  color:#B8D7C8;
+  background:linear-gradient(135deg, rgba(184,215,200,.13), rgba(255,255,255,.04));
+  border-color:rgba(184,215,200,.28);
+}
 textarea{width:100%; min-height:90px; resize:vertical; padding:12px; border-radius:14px; border:1px solid var(--line); background:var(--surface2); color:var(--text); outline:none}
 input,select{width:100%; padding:11px 12px; border-radius:13px; border:1px solid var(--line); background:var(--surface); color:var(--text); outline:none;}
 .input-row{display:flex; gap:8px; align-items:center} .input-row > *{flex:1}
@@ -221,7 +255,7 @@ function renderStartRequired(){
   return wrap;
 }
 
-function welcomeCard(){ const c=card('card info'); c.innerHTML=`<h2>Üdv az Étrend appban</h2><p>Ez egy puha, átlátható főoldal a 14 napos program kényelmes követéséhez.</p>`; return c; }
+function welcomeCard(){ const c=card('card info'); c.innerHTML=`<h2>Üdv az Étrend appban</h2><p>Ez egy átlátható, étrend optimalizáló app receptekkel, bevásárlólistával.</p>`; return c; }
 function renderDiet(){ const wrap=document.createElement('div');
   if(state.day) return renderDayDetail();
   if(state.week) return renderWeekDetail(state.week);
@@ -241,11 +275,11 @@ function renderStartDateBox(){
 function openDay(dayNumber){ const w=dayNumber<=7?1:2; setState({view:'diet', week:w, day:dayNumber}); }
 function findDay(dayNumber){ for(const w of APP_DATA.weeks){ const d=w.days.find(x=>x.dayNumber==dayNumber); if(d) return {week:w, day:d}; } return null; }
 function renderWeekDetail(weekNum){ const wrap=document.createElement('div'); const w=APP_DATA.weeks.find(x=>x.weekNumber==weekNum); if(!w) return wrap;
-  const h=card('card'); h.innerHTML=`<div class="breadcrumb"><button class="nav-strong" id="backDiet">← Főoldal</button><span class="nav-current">${w.title}</span></div><h2>${w.title}</h2>`; wrap.append(h); setTimeout(()=>$('#backDiet').onclick=()=>setState({week:null, day:null}),0);
+  const h=card('card'); h.innerHTML=`<div class="breadcrumb"><button class="back-btn" id="backDiet">← Főoldal</button><span class="nav-current">${w.title}</span></div><h2>${w.title}</h2>`; wrap.append(h); setTimeout(()=>$('#backDiet').onclick=()=>setState({week:null, day:null}),0);
   w.days.forEach(d=>{ const b=document.createElement('button'); b.className='card day-card'; b.innerHTML=`<h3>${d.dayNumber}. nap – ${d.dayName}</h3>${d.meals.map(m=>`<div class="meal-line"><strong>${m.type}:</strong> ${escD(m.description)}</div>`).join('')}<p class="small muted">${escapeHtml(d.shortNote||'')}</p>`; b.onclick=()=>setState({day:d.dayNumber}); wrap.append(b); }); return wrap;
 }
 function renderDayDetail(){ const found=findDay(state.day); const wrap=document.createElement('div'); if(!found) return wrap; const {week, day}=found;
-  const h=card('card'); h.innerHTML=`<div class="breadcrumb"><button class="nav-strong" id="backWeek">← Vissza a napválasztóhoz</button><span class="nav-current">${week.title} · ${day.dayNumber}. nap</span></div><h2>${day.dayNumber}. nap – ${day.dayName}</h2><p class="muted">${escapeHtml(day.shortNote||'')}</p>`; wrap.append(h);
+  const h=card('card'); h.innerHTML=`<div class="breadcrumb"><button class="back-btn" id="backWeek">← Vissza a napválasztóhoz</button><span class="nav-current">${week.title} · ${day.dayNumber}. nap</span></div><h2>${day.dayNumber}. nap – ${day.dayName}</h2><p class="muted">${escapeHtml(day.shortNote||'')}</p>`; wrap.append(h);
   day.meals.forEach(m=>wrap.append(renderMealCard(m, day.dayNumber)));
   wrap.append(renderWater(day.dayNumber)); wrap.append(renderNote(day.dayNumber));
   setTimeout(()=>$('#backWeek').onclick=()=>setState({day:null}),0); return wrap;
@@ -288,7 +322,7 @@ function renderRecipes(){ if(state.recipeId) return renderRecipeDetail(state.rec
   return wrap;
 }
 function renderRecipeDetail(id){ const r=APP_DATA.recipes.find(x=>x.id===id); const wrap=document.createElement('div');
-  const backLabel=state.returnDay?'Vissza a naphoz':'Vissza a receptekhez'; const top=card('card'); top.innerHTML=`<button class="soft-btn" id="backRecipe">${backLabel}</button><h2>${escapeHtml(r?cleanText(r.name):'Recept')}</h2>${r?`<div class="recipe-meta"><span>${escapeHtml(r.category)}</span><span>${escapeHtml(r.time)}</span><span>${escapeHtml(r.servings)}</span></div><div class="chips">${r.tags.map(t=>`<span class="chip">${escapeHtml(t)}</span>`).join('')}</div>`:'<p>A recept részletei nem találhatók a forrásfájlban.</p>'}`; wrap.append(top);
+  const backLabel=state.returnDay?'Vissza a naphoz':'Vissza a receptekhez'; const top=card('card'); top.innerHTML=`<button class="back-btn alt" id="backRecipe">${backLabel}</button><h2>${escapeHtml(r?cleanText(r.name):'Recept')}</h2>${r?`<div class="recipe-meta"><span>${escapeHtml(r.category)}</span><span>${escapeHtml(r.time)}</span><span>${escapeHtml(r.servings)}</span></div><div class="chips">${r.tags.map(t=>`<span class="chip">${escapeHtml(t)}</span>`).join('')}</div>`:'<p>A recept részletei nem találhatók a forrásfájlban.</p>'}`; wrap.append(top);
   if(r){
     wrap.append(acc('Hozzávalók', `<ul>${(r.ingredients.length?r.ingredients:[r.ingredientsText]).map(i=>`<li>${escD(i)}</li>`).join('')}</ul>`, true));
     wrap.append(acc('Elkészítés', `<ol>${r.steps.map(s=>`<li>${escD(s)}</li>`).join('')}</ol>`, true));
@@ -341,7 +375,7 @@ function renderShopping(){
     const {lists,title,filter}=itemsForSelection();
     const block=card('card');
     const backLabel=shoppingMode==='day'?'← Vissza a napi listákhoz':'← Vissza a választóhoz';
-    block.innerHTML=`<div class="selection-head"><div><h2>${escapeHtml(title)}</h2><p class="summary-note">A tételek a meglévő étrendi bevásárlólistából vannak összerendezve.</p></div><button class="nav-strong primary-btn" id="clearShoppingSelection">${backLabel}</button></div><div class="input-row" style="margin-top:10px"><button class="soft-btn" id="resetCurrent">Pipák törlése</button><button class="soft-btn" id="resetAll">Minden pipa törlése</button></div>`;
+    block.innerHTML=`<div class="selection-head"><div><h2>${escapeHtml(title)}</h2><p class="summary-note">A tételek a meglévő étrendi bevásárlólistából vannak összerendezve.</p></div><button class="back-btn alt" id="clearShoppingSelection">${backLabel}</button></div><div class="input-row" style="margin-top:10px"><button class="soft-btn" id="resetCurrent">Pipák törlése</button><button class="soft-btn" id="resetAll">Minden pipa törlése</button></div>`;
     const cats=aggregateByCategory(lists, filter);
     let shown=0;
     cats.forEach(cat=>{ const det=document.createElement('details'); det.className='accordion'; det.open=true; det.innerHTML=`<summary>${escapeHtml(cat.name)}</summary><div class="acc-body"></div>`; const body=$('.acc-body',det); cat.items.forEach(item=>{ shown++; body.append(shopItem(item.weekNumber, cat.name, item)); }); block.append(det); });
