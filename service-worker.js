@@ -1,4 +1,4 @@
-const CACHE_NAME = 'etrend-pwa-v19';
+const CACHE_NAME = 'etrend-pwa-v20';
 const ASSETS = [
   './',
   'index.html',

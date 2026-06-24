@@ -593,20 +593,21 @@ function parseLocalDate(value){
   if(parts.length!==3 || parts.some(n=>!Number.isFinite(n))) return null;
   return new Date(parts[0], parts[1]-1, parts[2]);
 }
-function getDayOfYearLocal(date=new Date()){
-  // A telefon helyi naptári dátumát használjuk, UTC milliszekundummal számolva,
-  // hogy a nyári/téli időszámítás ne csúsztassa el a nap sorszámát.
-  const y=date.getFullYear();
-  const start=Date.UTC(y,0,1);
-  const current=Date.UTC(y,date.getMonth(),date.getDate());
-  return Math.floor((current-start)/86400000)+1;
+function getIsoWeekLocal(date=new Date()){
+  // Helyi naptári dátummal dolgozunk. Az ISO hét hétfővel indul,
+  // így a hét napjai végre egyeznek az étrend napneveivel.
+  const d=new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const day=d.getDay() || 7; // hétfő=1 ... vasárnap=7
+  d.setDate(d.getDate()+4-day);
+  const yearStart=new Date(d.getFullYear(),0,1);
+  return Math.ceil((((d-yearStart)/86400000)+1)/7);
 }
 function getCalendarDietInfo(date=new Date()){
-  const dayOfYear=getDayOfYearLocal(date);
-  const dietDay=((dayOfYear-1)%14)+1;
-  const weekNumber=dietDay<=7?1:2;
-  const dayInWeek=dietDay<=7?dietDay:dietDay-7;
-  return {dayOfYear,dietDay,weekNumber,dayInWeek};
+  const isoWeek=getIsoWeekLocal(date);
+  const weekNumber=(isoWeek % 2) === 1 ? 1 : 2;
+  const dayInWeek=((date.getDay()+6)%7)+1; // hétfő=1 ... vasárnap=7
+  const dietDay=(weekNumber-1)*7 + dayInWeek;
+  return {isoWeek,dietDay,weekNumber,dayInWeek};
 }
 function getCurrentProgramDay(){
   return getCalendarDietInfo().dietDay;
