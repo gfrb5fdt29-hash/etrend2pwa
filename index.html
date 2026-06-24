@@ -257,6 +257,80 @@ button.card:active,.choice-card:active,.day-choice:active,.primary-btn:active,.s
 [data-theme="dark"] .accordion{background:linear-gradient(135deg, rgba(255,255,255,.035), rgba(29,158,117,.10));}
 [data-theme="dark"] .accordion summary{background:linear-gradient(90deg, rgba(29,158,117,.14), rgba(234,162,58,.10), rgba(106,143,191,.10));}
 
+
+
+/* v19: teljes app paletta a Reggeli / Ebéd / Vacsora kártyákhoz igazítva */
+:root{
+  --morning-a:#FFF4D8;
+  --morning-b:#FFE0A6;
+  --lunch-a:#DDF7EA;
+  --lunch-b:#9FE6C4;
+  --dinner-a:#E7F0FF;
+  --dinner-b:#B9D2F2;
+  --warm-line:rgba(218,142,38,.26);
+  --cool-line:rgba(86,128,185,.24);
+}
+[data-theme="dark"]{
+  --morning-a:rgba(98,66,25,.62);
+  --morning-b:rgba(234,162,58,.18);
+  --lunch-a:rgba(20,74,56,.66);
+  --lunch-b:rgba(44,184,132,.18);
+  --dinner-a:rgba(28,43,67,.66);
+  --dinner-b:rgba(106,143,191,.20);
+  --warm-line:rgba(240,184,90,.30);
+  --cool-line:rgba(184,213,255,.24);
+}
+.card.info,
+.home-hero{
+  background:
+    radial-gradient(circle at 16% 14%, var(--morning-b), transparent 34%),
+    linear-gradient(135deg, var(--lunch-a) 0%, var(--dinner-a) 63%, var(--surface) 100%) !important;
+  border-color:var(--tone-lunch-border);
+}
+.home-today{
+  background:
+    radial-gradient(circle at 86% 18%, var(--dinner-b), transparent 30%),
+    linear-gradient(135deg, var(--morning-a) 0%, var(--lunch-a) 52%, var(--surface) 100%) !important;
+  border-color:var(--warm-line) !important;
+}
+.week-card:nth-child(1),
+.choice-card:nth-child(3n+1),
+.recipe-card:nth-of-type(3n+1),
+.guide-card:nth-of-type(3n+1),
+.day-choice:nth-child(3n+1){
+  background:linear-gradient(135deg, var(--morning-a) 0%, var(--morning-b) 38%, var(--surface) 100%) !important;
+  border-color:var(--warm-line) !important;
+}
+.week-card:nth-child(2),
+.choice-card:nth-child(3n+2),
+.recipe-card:nth-of-type(3n+2),
+.guide-card:nth-of-type(3n+2),
+.day-choice:nth-child(3n+2){
+  background:linear-gradient(135deg, var(--lunch-a) 0%, var(--lunch-b) 40%, var(--surface) 100%) !important;
+  border-color:var(--tone-lunch-border) !important;
+}
+.choice-card:nth-child(3n),
+.recipe-card:nth-of-type(3n),
+.guide-card:nth-of-type(3n),
+.day-choice:nth-child(3n){
+  background:linear-gradient(135deg, var(--dinner-a) 0%, var(--dinner-b) 42%, var(--surface) 100%) !important;
+  border-color:var(--cool-line) !important;
+}
+.day-card:nth-of-type(3n+1){background:linear-gradient(135deg, var(--morning-a) 0%, var(--morning-b) 35%, var(--surface) 100%) !important; border-color:var(--warm-line) !important;}
+.day-card:nth-of-type(3n+2){background:linear-gradient(135deg, var(--lunch-a) 0%, var(--lunch-b) 35%, var(--surface) 100%) !important; border-color:var(--tone-lunch-border) !important;}
+.day-card:nth-of-type(3n){background:linear-gradient(135deg, var(--dinner-a) 0%, var(--dinner-b) 35%, var(--surface) 100%) !important; border-color:var(--cool-line) !important;}
+.accordion:nth-of-type(3n+1){border-color:var(--warm-line);}
+.accordion:nth-of-type(3n+2){border-color:var(--tone-lunch-border);}
+.accordion:nth-of-type(3n){border-color:var(--cool-line);}
+.accordion:nth-of-type(3n+1) summary{background:linear-gradient(90deg, var(--morning-a), rgba(255,255,255,0));}
+.accordion:nth-of-type(3n+2) summary{background:linear-gradient(90deg, var(--lunch-a), rgba(255,255,255,0));}
+.accordion:nth-of-type(3n) summary{background:linear-gradient(90deg, var(--dinner-a), rgba(255,255,255,0));}
+.shop-item:nth-child(3n+1){background:linear-gradient(90deg, rgba(255,224,166,.20), transparent); border-radius:12px; padding-left:8px;}
+.shop-item:nth-child(3n+2){background:linear-gradient(90deg, rgba(159,230,196,.18), transparent); border-radius:12px; padding-left:8px;}
+.shop-item:nth-child(3n){background:linear-gradient(90deg, rgba(185,210,242,.18), transparent); border-radius:12px; padding-left:8px;}
+.nav-item.active{background:linear-gradient(135deg, var(--morning-a), var(--lunch-a) 54%, var(--dinner-a)) !important;}
+.primary-btn{background:linear-gradient(135deg, #0E6F51 0%, #1D9E75 44%, #B8D86C 100%) !important;}
+
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important; transition:none!important; scroll-behavior:auto!important;}}
 
 
@@ -478,8 +552,7 @@ function renderNav(){
 }
 function render(){ renderNav(); setupTheme(); const root=$('#app'); root.innerHTML='';
   let node;
-  if(!LS.get('startDate')) node = renderStartRequired();
-  else if(state.view==='diet') node = renderDiet();
+  if(state.view==='diet') node = renderDiet();
   else if(state.view==='recipes') node = renderRecipes();
   else if(state.view==='shopping') node = renderShopping();
   else if(state.view==='guide') node = renderGuide();
@@ -520,25 +593,36 @@ function parseLocalDate(value){
   if(parts.length!==3 || parts.some(n=>!Number.isFinite(n))) return null;
   return new Date(parts[0], parts[1]-1, parts[2]);
 }
+function getDayOfYearLocal(date=new Date()){
+  // A telefon helyi naptári dátumát használjuk, UTC milliszekundummal számolva,
+  // hogy a nyári/téli időszámítás ne csúsztassa el a nap sorszámát.
+  const y=date.getFullYear();
+  const start=Date.UTC(y,0,1);
+  const current=Date.UTC(y,date.getMonth(),date.getDate());
+  return Math.floor((current-start)/86400000)+1;
+}
+function getCalendarDietInfo(date=new Date()){
+  const dayOfYear=getDayOfYearLocal(date);
+  const dietDay=((dayOfYear-1)%14)+1;
+  const weekNumber=dietDay<=7?1:2;
+  const dayInWeek=dietDay<=7?dietDay:dietDay-7;
+  return {dayOfYear,dietDay,weekNumber,dayInWeek};
+}
 function getCurrentProgramDay(){
-  const saved=LS.get('startDate')||'';
-  const start=parseLocalDate(saved);
-  if(!start) return null;
-  const today=getLocalDateOnly();
-  const diff=Math.floor((today.getTime()-start.getTime())/86400000)+1;
-  return (diff>=1 && diff<=14) ? diff : null;
+  return getCalendarDietInfo().dietDay;
 }
 function renderStartDateBox(){
   const c=card('card soft today-box home-today');
-  const dayNo=getCurrentProgramDay();
-  c.innerHTML=`<div class="today-date">${escapeHtml(formatTodayLabel())}</div><button class="primary-btn today-btn" id="goToday" ${dayNo?'':'disabled'}><span>${dayNo?'Mai nap megnyitása':'Mai nap most nem aktív'}</span></button>`;
-  setTimeout(()=>{ const gt=$('#goToday',c); if(gt) gt.onclick=()=>openTodayFromStartDate(); },0);
+  const info=getCalendarDietInfo();
+  c.innerHTML=`<div class="today-date">${escapeHtml(formatTodayLabel())}</div><p class="muted small">Mai étrendnap: ${info.weekNumber}. hét · ${info.dayInWeek}. nap</p><button class="primary-btn today-btn" id="goToday"><span>Mai nap megnyitása</span></button>`;
+  setTimeout(()=>{ const gt=$('#goToday',c); if(gt) gt.onclick=()=>openCalendarToday(); },0);
   return c;
 }
+function openCalendarToday(){
+  openDay(getCalendarDietInfo().dietDay);
+}
 function openTodayFromStartDate(){
-  const current=getCurrentProgramDay();
-  if(current) openDay(current);
-  else render();
+  openCalendarToday();
 }
 function openDay(dayNumber){ const w=Number(dayNumber)<=7?1:2; setState({view:'diet', week:w, day:Number(dayNumber)}); }
 function findDay(dayNumber){ for(const w of APP_DATA.weeks){ const d=w.days.find(x=>x.dayNumber==dayNumber); if(d) return {week:w, day:d}; } return null; }
