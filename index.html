@@ -170,6 +170,81 @@ button.card:active,.choice-card:active,.day-choice:active,.primary-btn:active,.s
 .today-box{text-align:center; padding:22px 18px;}
 .today-date{font-size:17px; font-weight:800; color:var(--text); margin-bottom:16px;}
 .today-btn{min-width:210px; min-height:52px; font-size:16px; border-radius:18px; margin:0 auto; display:inline-flex; align-items:center; justify-content:center;}
+
+/* v17: melegebb, többárnyalatú kártyarendszer a Reggeli/Ebéd/Vacsora hangulatához */
+:root{
+  --tone-morning: rgba(255,190,93,.20);
+  --tone-lunch: rgba(29,158,117,.18);
+  --tone-dinner: rgba(106,143,191,.16);
+  --tone-morning-border: rgba(234,162,58,.28);
+  --tone-lunch-border: rgba(29,158,117,.26);
+  --tone-dinner-border: rgba(106,143,191,.24);
+}
+[data-theme="dark"]{
+  --tone-morning: rgba(234,162,58,.16);
+  --tone-lunch: rgba(29,158,117,.18);
+  --tone-dinner: rgba(106,143,191,.18);
+  --tone-morning-border: rgba(240,184,90,.30);
+  --tone-lunch-border: rgba(123,224,189,.26);
+  --tone-dinner-border: rgba(184,213,255,.24);
+}
+.card:not(.meal-card){
+  background:
+    linear-gradient(140deg, var(--tone-morning) 0%, rgba(255,255,255,0) 34%),
+    linear-gradient(215deg, var(--tone-dinner) 0%, rgba(255,255,255,0) 42%),
+    linear-gradient(135deg, var(--tone-lunch) 0%, var(--surface) 62%);
+  border-color: rgba(29,158,117,.18);
+}
+.card.soft:not(.meal-card), .week-card, .choice-card, .day-choice{
+  background:
+    linear-gradient(135deg, var(--tone-lunch) 0%, rgba(255,255,255,0) 42%),
+    linear-gradient(315deg, var(--tone-morning) 0%, rgba(255,255,255,0) 40%),
+    var(--surface);
+}
+.card.info{
+  background:
+    radial-gradient(circle at 18% 16%, rgba(255,190,93,.25), transparent 34%),
+    linear-gradient(135deg, rgba(29,158,117,.28), rgba(106,143,191,.12) 64%, var(--surface));
+}
+.recipe-card:nth-of-type(3n+1), .guide-card:nth-of-type(3n+1){border-color:var(--tone-morning-border);}
+.recipe-card:nth-of-type(3n+2), .guide-card:nth-of-type(3n+2){border-color:var(--tone-lunch-border);}
+.recipe-card:nth-of-type(3n), .guide-card:nth-of-type(3n){border-color:var(--tone-dinner-border);}
+.week-card:nth-child(1){
+  background:linear-gradient(135deg, var(--tone-morning) 0%, var(--tone-lunch) 56%, var(--surface) 100%);
+  border-color:var(--tone-morning-border);
+}
+.week-card:nth-child(2){
+  background:linear-gradient(135deg, var(--tone-lunch) 0%, var(--tone-dinner) 58%, var(--surface) 100%);
+  border-color:var(--tone-dinner-border);
+}
+.day-card:nth-of-type(3n+1){
+  background:linear-gradient(135deg, var(--tone-morning) 0%, rgba(255,255,255,0) 45%), var(--surface);
+  border-color:var(--tone-morning-border);
+}
+.day-card:nth-of-type(3n+2){
+  background:linear-gradient(135deg, var(--tone-lunch) 0%, rgba(255,255,255,0) 45%), var(--surface);
+  border-color:var(--tone-lunch-border);
+}
+.day-card:nth-of-type(3n){
+  background:linear-gradient(135deg, var(--tone-dinner) 0%, rgba(255,255,255,0) 45%), var(--surface);
+  border-color:var(--tone-dinner-border);
+}
+.accordion{background:linear-gradient(135deg, rgba(255,255,255,.78), rgba(221,245,236,.28));}
+.accordion summary{background:linear-gradient(90deg, rgba(29,158,117,.10), rgba(255,190,93,.08), rgba(106,143,191,.07));}
+.chip{background:linear-gradient(135deg, rgba(255,190,93,.13), rgba(29,158,117,.10));}
+.soft-btn{background:linear-gradient(135deg, rgba(255,190,93,.14), rgba(29,158,117,.12), rgba(106,143,191,.09));}
+.primary-btn{background:linear-gradient(135deg, #0F6F50 0%, #1D9E75 52%, #7FCB61 100%); box-shadow:0 12px 26px rgba(29,158,117,.22);}
+.back-btn{background:linear-gradient(135deg, rgba(255,190,93,.13), rgba(29,158,117,.13), rgba(106,143,191,.08));}
+.nav-item.active{background:linear-gradient(135deg, rgba(255,190,93,.16), rgba(29,158,117,.22), rgba(106,143,191,.10));}
+[data-theme="dark"] .card:not(.meal-card){
+  background:
+    linear-gradient(140deg, var(--tone-morning) 0%, rgba(0,0,0,0) 34%),
+    linear-gradient(215deg, var(--tone-dinner) 0%, rgba(0,0,0,0) 42%),
+    linear-gradient(135deg, var(--tone-lunch) 0%, var(--surface) 62%);
+}
+[data-theme="dark"] .accordion{background:linear-gradient(135deg, rgba(255,255,255,.035), rgba(29,158,117,.10));}
+[data-theme="dark"] .accordion summary{background:linear-gradient(90deg, rgba(29,158,117,.14), rgba(234,162,58,.10), rgba(106,143,191,.10));}
+
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important; transition:none!important; scroll-behavior:auto!important;}}
 
 
@@ -423,14 +498,36 @@ function renderDiet(){ const wrap=document.createElement('div');
   APP_DATA.weeks.forEach(w=>{ const b=document.createElement('button'); b.className='card week-card soft'; b.innerHTML=`<h2>${w.title}</h2><p class="muted">${w.days.length} nap · reggeli, ebéd, vacsora</p>`; b.onclick=()=>setState({week:w.weekNumber, day:null}); grid.append(b); });
   wrap.append(grid); return wrap;
 }
+function getLocalDateOnly(d=new Date()){
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+function parseLocalDate(value){
+  if(!value) return null;
+  const parts=String(value).split('-').map(Number);
+  if(parts.length!==3 || parts.some(n=>!Number.isFinite(n))) return null;
+  return new Date(parts[0], parts[1]-1, parts[2]);
+}
+function getCurrentProgramDay(){
+  const saved=LS.get('startDate')||'';
+  const start=parseLocalDate(saved);
+  if(!start) return null;
+  const today=getLocalDateOnly();
+  const diff=Math.floor((today.getTime()-start.getTime())/86400000)+1;
+  return (diff>=1 && diff<=14) ? diff : null;
+}
 function renderStartDateBox(){
-  const c=card('card soft today-box'); const saved=LS.get('startDate')||''; let dayNo=null;
-  if(saved){ const today=new Date(); today.setHours(0,0,0,0); const start=new Date(saved+'T00:00:00'); const diff=Math.floor((today-start)/86400000)+1; if(diff>=1 && diff<=14) dayNo=diff; }
+  const c=card('card soft today-box');
+  const dayNo=getCurrentProgramDay();
   c.innerHTML=`<div class="today-date">${escapeHtml(formatTodayLabel())}</div><button class="primary-btn today-btn" id="goToday" ${dayNo?'':'disabled'}>${dayNo?'Mai nap megnyitása':'Mai nap most nem aktív'}</button>`;
-  setTimeout(()=>{ const gt=$('#goToday',c); if(gt && dayNo) gt.onclick=()=>openDay(dayNo); },0);
+  setTimeout(()=>{ const gt=$('#goToday',c); if(gt) gt.onclick=()=>openTodayFromStartDate(); },0);
   return c;
 }
-function openDay(dayNumber){ const w=dayNumber<=7?1:2; setState({view:'diet', week:w, day:dayNumber}); }
+function openTodayFromStartDate(){
+  const current=getCurrentProgramDay();
+  if(current) openDay(current);
+  else render();
+}
+function openDay(dayNumber){ const w=Number(dayNumber)<=7?1:2; setState({view:'diet', week:w, day:Number(dayNumber)}); }
 function findDay(dayNumber){ for(const w of APP_DATA.weeks){ const d=w.days.find(x=>x.dayNumber==dayNumber); if(d) return {week:w, day:d}; } return null; }
 function renderWeekDetail(weekNum){ const wrap=document.createElement('div'); const w=APP_DATA.weeks.find(x=>x.weekNumber==weekNum); if(!w) return wrap;
   const h=card('card'); h.innerHTML=`<div class="breadcrumb"><button class="back-btn" id="backDiet">← Főoldal</button><span class="nav-current">${w.title}</span></div><h2>${w.title}</h2>`; wrap.append(h); setTimeout(()=>$('#backDiet').onclick=()=>setState({week:null, day:null}),0);
