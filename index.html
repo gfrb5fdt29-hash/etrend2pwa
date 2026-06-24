@@ -169,7 +169,19 @@ button.card:active,.choice-card:active,.day-choice:active,.primary-btn:active,.s
 @media(max-width:520px){.choice-grid{grid-template-columns:repeat(3,1fr); gap:7px}.choice-card{padding:10px; min-height:88px}.choice-card p{display:none}.choice-card h3{font-size:15px}.day-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.day-choice .tiny{display:none;}}
 .today-box{text-align:center; padding:22px 18px;}
 .today-date{font-size:17px; font-weight:800; color:var(--text); margin-bottom:16px;}
-.today-btn{min-width:210px; min-height:52px; font-size:16px; border-radius:18px; margin:0 auto; display:inline-flex; align-items:center; justify-content:center;}
+ .today-btn{min-width:210px; min-height:52px; font-size:16px; border-radius:18px; margin:0 auto; display:inline-flex; align-items:center; justify-content:center; position:relative; overflow:hidden; isolation:isolate; transform-origin:center;}
+.today-btn::before{content:""; position:absolute; inset:-3px; background:linear-gradient(115deg, transparent 0%, transparent 30%, rgba(255,255,255,.72) 46%, rgba(255,255,255,.18) 56%, transparent 72%); transform:translateX(-115%) skewX(-18deg); animation:todaySheen 1250ms cubic-bezier(.2,.8,.2,1) 330ms 1 both; pointer-events:none; z-index:1;}
+.today-btn::after{content:""; position:absolute; inset:-8px; border-radius:inherit; background:radial-gradient(circle at 50% 50%, rgba(139,255,205,.46), transparent 62%); opacity:0; animation:todayGlow 1400ms cubic-bezier(.2,.8,.2,1) 120ms 1 both; pointer-events:none; z-index:0;}
+.today-btn span,.today-btn{z-index:2;}
+.today-btn:active{transform:translateY(3px) scale(.94)!important; box-shadow:0 5px 14px rgba(13,99,70,.22), inset 0 3px 12px rgba(0,0,0,.18)!important;}
+@keyframes todaySheen{0%{transform:translateX(-115%) skewX(-18deg); opacity:0;}16%{opacity:1;}72%{opacity:1;}100%{transform:translateX(115%) skewX(-18deg); opacity:0;}}
+@keyframes todayGlow{0%{opacity:0; transform:scale(.92);}35%{opacity:.9; transform:scale(1.02);}100%{opacity:0; transform:scale(1.1);}}
+.home-view .home-hero,.home-view .home-today,.home-view .week-overview .week-card{animation:homeCardEntrance 660ms cubic-bezier(.16,.9,.2,1) both; transform-origin:center bottom;}
+.home-view .home-hero{animation-delay:0ms;}
+.home-view .home-today{animation-delay:95ms;}
+.home-view .week-overview .week-card:nth-child(1){animation-delay:175ms;}
+.home-view .week-overview .week-card:nth-child(2){animation-delay:235ms;}
+@keyframes homeCardEntrance{0%{opacity:0; transform:translate3d(0,22px,0) scale(.965); filter:blur(5px); box-shadow:0 2px 8px rgba(17,75,53,.02);}58%{opacity:1; transform:translate3d(0,-2px,0) scale(1.006); filter:blur(0);}100%{opacity:1; transform:translate3d(0,0,0) scale(1); filter:blur(0);}}
 
 /* v17: melegebb, többárnyalatú kártyarendszer a Reggeli/Ebéd/Vacsora hangulatához */
 :root{
@@ -488,13 +500,14 @@ function renderStartRequired(){
   return wrap;
 }
 
-function welcomeCard(){ const c=card('card info'); c.innerHTML=`<h2>Üdv az Étrend appban</h2><p>Személyre szabott mintaétrend anya számára  – házias, magyaros, levesekre és főzelékekre épülő. A célja, hogy támogasson az emésztés javításában és a vércukor-ingadozás megelőzésében.</p>`; return c; }
+function welcomeCard(){ const c=card('card info home-hero'); c.innerHTML=`<h2>Üdv az Étrend appban</h2><p>Személyre szabott mintaétrend anya számára  – házias, magyaros, levesekre és főzelékekre épülő. A célja, hogy támogasson az emésztés javításában és a vércukor-ingadozás megelőzésében.</p>`; return c; }
 function renderDiet(){ const wrap=document.createElement('div');
   if(state.day) return renderDayDetail();
   if(state.week) return renderWeekDetail(state.week);
+  wrap.className='home-view';
   wrap.append(welcomeCard());
   wrap.append(renderStartDateBox());
-  const grid=document.createElement('div'); grid.className='grid week-overview';
+  const grid=document.createElement('div'); grid.className='grid week-overview home-weeks';
   APP_DATA.weeks.forEach(w=>{ const b=document.createElement('button'); b.className='card week-card soft'; b.innerHTML=`<h2>${w.title}</h2><p class="muted">${w.days.length} nap · reggeli, ebéd, vacsora</p>`; b.onclick=()=>setState({week:w.weekNumber, day:null}); grid.append(b); });
   wrap.append(grid); return wrap;
 }
@@ -516,9 +529,9 @@ function getCurrentProgramDay(){
   return (diff>=1 && diff<=14) ? diff : null;
 }
 function renderStartDateBox(){
-  const c=card('card soft today-box');
+  const c=card('card soft today-box home-today');
   const dayNo=getCurrentProgramDay();
-  c.innerHTML=`<div class="today-date">${escapeHtml(formatTodayLabel())}</div><button class="primary-btn today-btn" id="goToday" ${dayNo?'':'disabled'}>${dayNo?'Mai nap megnyitása':'Mai nap most nem aktív'}</button>`;
+  c.innerHTML=`<div class="today-date">${escapeHtml(formatTodayLabel())}</div><button class="primary-btn today-btn" id="goToday" ${dayNo?'':'disabled'}><span>${dayNo?'Mai nap megnyitása':'Mai nap most nem aktív'}</span></button>`;
   setTimeout(()=>{ const gt=$('#goToday',c); if(gt) gt.onclick=()=>openTodayFromStartDate(); },0);
   return c;
 }
